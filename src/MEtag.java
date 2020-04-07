@@ -27,18 +27,23 @@ public class MEtag {
 	    BufferedReader dataReader = new BufferedReader (new FileReader (dataFileName));
 	    PrintWriter responseWriter = new PrintWriter (new FileWriter (responseFileName));
 	    String priorTag = "#";
+	    String prevPriorTag = "^^^";
 	    String line;
 	    while ((line = dataReader.readLine()) != null) {
-		if (line.equals("")) {
-		    responseWriter.println();
-		    priorTag = "#";
-		} else {
-		    line = line.replaceAll("@@", Matcher.quoteReplacement(priorTag));
-		    String[] features = line.split("\t");
-		    String tag = m.getBestOutcome(m.eval(features));
-		    responseWriter.println(features[0] + "\t" + tag);
-		    priorTag = tag;
-		}
+			if (line.equals("")) {
+				responseWriter.println();
+				priorTag = "#";
+				prevPriorTag = "^^^";
+			} else {
+				line = line.replaceAll("@@", Matcher.quoteReplacement(priorTag));
+				line = line.replaceAll("&&&", Matcher.quoteReplacement(prevPriorTag));
+				String[] features = line.split("\t");
+				String tag = m.getBestOutcome(m.eval(features));
+				responseWriter.println(features[0] + "\t" + tag);
+				if(!"#".equals(priorTag))
+					prevPriorTag = priorTag;
+				priorTag = tag;
+			}
 	    }
 	    responseWriter.close();
 	} catch (Exception e) {

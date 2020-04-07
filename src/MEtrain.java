@@ -23,7 +23,7 @@ public class MEtrain {
 	    FileReader datafr = new FileReader(new File(dataFileName));
 	    EventStream es = new BasicEventStream(new PlainTextByLineDataStream(datafr), "\t");
 	    // train model using 100 iterations, ignoring events occurring fewer than 4 times
-	    GISModel model = GIS.trainModel(es, 100, 4);
+	    GISModel model = GIS.trainModel(es, 300, 1);
 	    // save model
 	    File outputFile = new File(modelFileName);
 	    GISModelWriter writer = new SuffixSensitiveGISModelWriter(model, outputFile);

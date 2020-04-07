@@ -93,3 +93,4 @@ def score (keyFileName, responseFileName):
 	print("  recall:    %5.2f" % recall)
 	print("  F1:        %5.2f" % F)
 score ('CONLL_dev.name','response.name')
+#score ('testFile','response.name')
