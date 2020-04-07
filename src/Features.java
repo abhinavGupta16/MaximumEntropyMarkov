@@ -60,6 +60,7 @@ public enum Features {
         appendNextTag(nextInput, sb, externalLists);
 //        appendNextNextTag(nextNextInput, sb);
         appendPrevPrevTag(prevPrevInput, sb);
+//        appendNamePrefixes(prevInput, prevPrevInput, sb, externalLists);
 //        addNoun(input, externalLists, sb);
 //        appendForSameTag(prevInput, input, sb);
         for (Features pattern : Features.values()) {
@@ -112,6 +113,29 @@ public enum Features {
 //        sb.append("\tprevWord="+ word + "\tprevPos="+ pos + "\tprevTag=" + tag);
     }
 
+    private static void appendNamePrefixes(String[] prevInput, String[] prevPrevInput, StringBuffer sb, ExternalLists externalLists){
+        if(prevInput.length<3) {
+            sb.append("\tprevPrefix=$$$\tprevPrevPrefix=$$$");
+        } else {
+            String word = prevInput[0];
+            if(externalLists.namePrefixes.contains(word.toUpperCase())){
+                sb.append("\tprevPrefix=truetrue");
+            } else {
+                sb.append("\tprevPrefix=falsefalse");
+            }
+        }
+        if(prevPrevInput.length<3){
+            sb.append("\tprevPrevPrefix=$$$");
+        } else {
+            String word = prevPrevInput[0];
+            if(externalLists.namePrefixes.contains(word.toUpperCase())){
+                sb.append("\tprevPrevPrefix=truetrue");
+            } else {
+                sb.append("\tprevPrevPrefix=falsefalse");
+            }
+        }
+    }
+
     private static void appendPrevPrevTag(String[] prevPrevInput, StringBuffer sb){
         if(prevPrevInput.length<3) {
             sb.append("\tprevPrevWord=((()");
@@ -124,8 +148,8 @@ public enum Features {
         if(prevPrevInput.length==4){
             tag = prevPrevInput[3];
         }
-//        sb.append("\tprevWord="+ word + "\tprevPrevPos="+ pos + "\tprevPrevChunkTag=" + chunkTag + "\tprevTag=" + tag);
-        sb.append("\tprevPrevTag="+ tag);
+//        sb.append("\tprevPrevWord="+ word + "\tprevPrevPos="+ pos + "\tprevPrevChunkTag=" + chunkTag + "\tprevTag=" + tag);
+        sb.append("\tprevPrevPos="+ pos + "\tprevPrevTag="+ tag);
 //        sb.append("\tprevWord="+ word + "\tprevPrevPos="+ pos + "\tprevPrevTag=" + tag);
     }
 
@@ -164,7 +188,7 @@ public enum Features {
             tag = nextNextInput[3];
         }
 
-        sb.append("\tnextNextWord="+ word);
+        sb.append("\tnextChunkTag=" + chunkTag);
 //        sb.append("\tnextWord="+ word + "\tnextPos="+ pos + "\tnextChunkTag=" + chunkTag);
     }
 
