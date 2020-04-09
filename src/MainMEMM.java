@@ -7,16 +7,18 @@ import java.nio.file.Files;
 import java.util.List;
 
 public class MainMEMM {
+    public static final String BASE_DIR = "C:\\Datadrive\\NYU_assignment\\Spring_2020\\NLP\\Assignment6\\MaximumEntropyMarkov\\files\\";
     public static void main(String[] args) throws Exception{
-        String trainFile = "D:\\NYU_assignment\\Spring_2020\\NLP\\Assignment6\\MaximumEntropyMarkov\\files\\CONLL_train.pos-chunk-name";
-        String testFile = "D:\\NYU_assignment\\Spring_2020\\NLP\\Assignment6\\MaximumEntropyMarkov\\files\\CONLL_dev.pos-chunk";
-        String featureFile = "D:\\NYU_assignment\\Spring_2020\\NLP\\Assignment6\\MaximumEntropyMarkov\\files\\CONLL_pos-chunk-name.feature";
-        String modelFile = "D:\\NYU_assignment\\Spring_2020\\NLP\\Assignment6\\MaximumEntropyMarkov\\files\\CONLL.model.bin.gz";
-        String outputFile = "D:\\NYU_assignment\\Spring_2020\\NLP\\Assignment6\\MaximumEntropyMarkov\\files\\mid_response.name";
-        String finalOutputFile = "D:\\NYU_assignment\\Spring_2020\\NLP\\Assignment6\\MaximumEntropyMarkov\\files\\response.name";
-        String actualOutputFile = "D:\\NYU_assignment\\Spring_2020\\NLP\\Assignment6\\MaximumEntropyMarkov\\files\\CONLL_dev.name";
+        String trainFile = BASE_DIR + "CONLL_train.pos-chunk-name";
+        String testFile = BASE_DIR + "CONLL_dev.pos-chunk";
+        String featureFile = BASE_DIR + "CONLL_pos-chunk-name.feature";
+        String modelFile = BASE_DIR + "CONLL.model.bin.gz";
+        String outputFile = BASE_DIR + "mid_response.name";
+        String finalOutputFile = BASE_DIR + "response.name";
+        String actualOutputFile = BASE_DIR + "CONLL_dev.name";
+//        String actualOutputFile = BASE_DIR + "testFile";
 
-        String featureFileForTest = "D:\\NYU_assignment\\Spring_2020\\NLP\\Assignment6\\MaximumEntropyMarkov\\files\\CONLL_pos-chunk.feature";
+        String featureFileForTest = BASE_DIR + "CONLL_pos-chunk.feature";
 
         FeatureBuilder featureBuilder = new FeatureBuilder(trainFile, featureFile);
         featureBuilder.generateFeatures();
@@ -27,8 +29,9 @@ public class MainMEMM {
         featureBuilder2.generateFeatures();
 
         MEtag.main(new String[]{featureFileForTest, modelFile, finalOutputFile});
-//        featureBuilder2.postProcessFile(outputFile, finalOutputFile);
         diff(actualOutputFile, finalOutputFile);
+//        featureBuilder2.postProcessFile(outputFile, finalOutputFile);
+
 //        Runtime.getRuntime().exec("python score.name.py");
     }
 
@@ -37,7 +40,7 @@ public class MainMEMM {
         File generatedFile = new File(generatedFileName);
         List<String> actualFileData = Files.readAllLines(actualFile.toPath(), StandardCharsets.UTF_8);
         List<String> generatedFileData = Files.readAllLines(generatedFile.toPath(), StandardCharsets.UTF_8);
-        String diffFileName = "D:\\NYU_assignment\\Spring_2020\\NLP\\Assignment6\\MaximumEntropyMarkov\\files\\diff.txt";
+        String diffFileName = BASE_DIR + "diff.txt";
         BufferedWriter bWriter = new BufferedWriter(new FileWriter(diffFileName));
 
         for(int i = 0; i < actualFileData.size(); i++){

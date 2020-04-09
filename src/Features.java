@@ -6,7 +6,7 @@ public enum Features {
     ALL_CAPS("[A-Z][A-Z]*"),
 //    DATE("(([0-9][0-9]*-)([0-9][0-9]*-)*)?[0-9][0-9]*([a-zA-Z]?)"),
     NUMBER_WORD_PATTERN("([a-zA-Z]*)?(\\-?)[-+]?[0-9](\\:?)(\\-?)[0-9]*(,[0-9][0-9]*)*?(\\.[0-9]*)*([a-zA-Z]?)"),
-//    ED_WORD_PATTERN(".*ed");
+//    NUMBER("[0-9].*"),
 //    AL_WORD_PATTERN(".*al");
 //    IAL_WORD_PATTERN(".*ial");
 //    TIAL_WORD_PATTERN(".*tial"),
@@ -57,9 +57,9 @@ public enum Features {
             tag = input[3];
         }
         appendPrevTag(prevInput, sb);
+        appendPrevPrevTag(prevPrevInput, sb);
         appendNextTag(nextInput, sb, externalLists);
 //        appendNextNextTag(nextNextInput, sb);
-        appendPrevPrevTag(prevPrevInput, sb);
 //        appendNamePrefixes(prevInput, prevPrevInput, sb, externalLists);
 //        addNoun(input, externalLists, sb);
 //        appendForSameTag(prevInput, input, sb);
@@ -138,7 +138,7 @@ public enum Features {
 
     private static void appendPrevPrevTag(String[] prevPrevInput, StringBuffer sb){
         if(prevPrevInput.length<3) {
-            sb.append("\tprevPrevWord=((()");
+            sb.append("\tprevPrevPos=((()\tprevPrevTag=((()");
             return;
         }
         String word = prevPrevInput[0];
@@ -166,11 +166,9 @@ public enum Features {
             tag = nextInput[3];
         }
 
-//        if(externalLists.getCompanySuffixes().contains(word.toUpperCase())){
-//           sb.append("\tcompanySuffix=truetrue");
-//        } else {
-//            sb.append("\tcompanySuffix=falsefalse");
-//        }
+//
+
+
         sb.append("\tnextWord="+ word + "\tnextPos="+ pos + "\tnextChunkTag=" + chunkTag);
 //        sb.append("\tnextWord="+ word + "\tnextPos="+ pos + "\tnextChunkTag=" + chunkTag);
     }
