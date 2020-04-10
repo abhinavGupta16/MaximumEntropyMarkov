@@ -4,19 +4,21 @@ import java.util.Set;
 public enum Features {
     FIRST_LETTER_CAPS("[A-Z].*"),
     ALL_CAPS("[A-Z][A-Z]*"),
-//    DATE("(([0-9][0-9]*-)([0-9][0-9]*-)*)?[0-9][0-9]*([a-zA-Z]?)"),
     NUMBER_WORD_PATTERN("([a-zA-Z]*)?(\\-?)[-+]?[0-9](\\:?)(\\-?)[0-9]*(,[0-9][0-9]*)*?(\\.[0-9]*)*([a-zA-Z]?)"),
+    ING_WORD_PATTERN(".*ing"),
+    LOGY_WORD_PATTERN(".*logy");
+
+    // Below tried but did not improve results
+//    DATE("(([0-9][0-9]*-)([0-9][0-9]*-)*)?[0-9][0-9]*([a-zA-Z]?)"),
 //    NUMBER("[0-9].*"),
 //    AL_WORD_PATTERN(".*al");
 //    IAL_WORD_PATTERN(".*ial");
 //    TIAL_WORD_PATTERN(".*tial"),
 //    ABLE_WORD_PATTERN(".*able"),
 //    S_WORD_PATTERN(".*s"),
-    ING_WORD_PATTERN(".*ing"),
 //    ER_WORD_PATTERN(".*er"),
 //    ION_WORD_PATTERN(".*ion"),
 //    ON_WORD_PATTERN(".*on"),
-    LOGY_WORD_PATTERN(".*logy");
 //    EST_WORD_PATTERN(".*est"),
 //    ITY_WORD_PATTERN(".*ity"),
 //    ISM_WORD_PATTERN(".*ism"),
@@ -40,7 +42,9 @@ public enum Features {
         String chunkTag = input[2];
         String tag = "";
 
-        StringBuffer sb = new StringBuffer(word+"\tpos="+ pos + "\tchunkTag=" + chunkTag);
+        StringBuffer sb = new StringBuffer(word+"\tpos="+ pos + "\tchunkTag=" + chunkTag + "\tword=" + word);
+
+        // Below tried but did not improve results
 //        if(firstWord){
 //            sb.append("\tfirstWord=truetrue");
 //        } else {
@@ -59,6 +63,8 @@ public enum Features {
         appendPrevTag(prevInput, sb);
         appendPrevPrevTag(prevPrevInput, sb);
         appendNextTag(nextInput, sb, externalLists);
+
+        // Below tried but did not improve results
 //        appendNextNextTag(nextNextInput, sb);
 //        appendNamePrefixes(prevInput, prevPrevInput, sb, externalLists);
 //        addNoun(input, externalLists, sb);
@@ -98,7 +104,7 @@ public enum Features {
 
     private static void appendPrevTag(String[] prevInput, StringBuffer sb){
         if(prevInput.length<3) {
-            sb.append("\tprevWord=$$$\tprevPos=$$$\tprevChunkTag=$$$\tprevTag=@@");
+            sb.append("\tprevWord=$$$\tprevPos=$$$\tprevTag=@@");
             return;
         }
         String word = prevInput[0];
@@ -108,8 +114,10 @@ public enum Features {
         if(prevInput.length==4){
             tag = prevInput[3];
         }
-//        sb.append("\tprevWord="+ word + "\tprevPos="+ pos + "\tprevChunkTag=" + chunkTag + "\tprevTag=" + tag);
+
         sb.append("\tprevWord="+ word + "\tprevPos="+ pos + "\tprevTag=" + tag);
+        // Below tried but did not improve results
+//        sb.append("\tprevWord="+ word + "\tprevPos="+ pos + "\tprevChunkTag=" + chunkTag + "\tprevTag=" + tag);
 //        sb.append("\tprevWord="+ word + "\tprevPos="+ pos + "\tprevTag=" + tag);
     }
 
@@ -148,8 +156,9 @@ public enum Features {
         if(prevPrevInput.length==4){
             tag = prevPrevInput[3];
         }
-//        sb.append("\tprevPrevWord="+ word + "\tprevPrevPos="+ pos + "\tprevPrevChunkTag=" + chunkTag + "\tprevTag=" + tag);
         sb.append("\tprevPrevPos="+ pos + "\tprevPrevTag="+ tag);
+        // Below tried but did not improve results
+//        sb.append("\tprevPrevWord="+ word + "\tprevPrevPos="+ pos + "\tprevPrevChunkTag=" + chunkTag + "\tprevTag=" + tag);
 //        sb.append("\tprevWord="+ word + "\tprevPrevPos="+ pos + "\tprevPrevTag=" + tag);
     }
 
@@ -166,10 +175,8 @@ public enum Features {
             tag = nextInput[3];
         }
 
-//
-
-
         sb.append("\tnextWord="+ word + "\tnextPos="+ pos + "\tnextChunkTag=" + chunkTag);
+        // Below tried but did not improve results
 //        sb.append("\tnextWord="+ word + "\tnextPos="+ pos + "\tnextChunkTag=" + chunkTag);
     }
 
@@ -187,6 +194,7 @@ public enum Features {
         }
 
         sb.append("\tnextChunkTag=" + chunkTag);
+        // Below tried but did not improve results
 //        sb.append("\tnextWord="+ word + "\tnextPos="+ pos + "\tnextChunkTag=" + chunkTag);
     }
 
@@ -200,6 +208,5 @@ public enum Features {
                 sb.append("\t" + featureName + "=falsefalse");
             }
         }
-//        System.out.println(word);
     }
 }

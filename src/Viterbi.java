@@ -14,8 +14,6 @@ public class Viterbi {
         GISModel m = (GISModel) new SuffixSensitiveGISModelReader(new File(modelFileName)).getModel();
         BufferedReader dataReader = new BufferedReader (new FileReader(dataFileName));
         PrintWriter responseWriter = new PrintWriter (new FileWriter(responseFileName));
-        String priorTag = "#";
-        String prevPriorTag = "^^^";
         String line;
         String[] featureLine;
         List<String[]> featureList = new LinkedList<>();
@@ -39,8 +37,16 @@ public class Viterbi {
                 responseWriter.println();
             }
         }
+        responseWriter.close();
     }
 
+    /**
+     *
+     * @param obs sentence stored in the array
+     * @param m GIS Model
+     * @param features Features corresponding to every word
+     * @return predicted tag sequence
+     */
     public static String[] calculateViterbi(String[] obs, GISModel m, String[][] features){
         double[] currentProbs = m.eval(features[0]);
         Pair[][] v = new Pair[currentProbs.length][obs.length];
@@ -59,8 +65,9 @@ public class Viterbi {
                 double maxProb = -1;
                 Integer maxStateIndex = -1;
                 for(int prevStateIndex = 0; prevStateIndex < currentProbs.length; prevStateIndex++){
-                    features[wordIndex][4] = replacePrevFeature(m, prevStateIndex, features[wordIndex][4]);
-                    features[wordIndex][6] = replacePrevPrevFeature(m, prevStateIndex, features[wordIndex][6]);
+                    // replacing the prevTag and prevPrevTag (same as replacing @@ and &&&)
+                    features[wordIndex][5] = replacePrevFeature(m, prevStateIndex);
+                    features[wordIndex][7] = replacePrevPrevFeature(m, prevStateIndex-1, features[wordIndex][7]);
                     double[] currEvalProbs = m.eval(features[wordIndex]);
                     double prob = currEvalProbs[stateIndex] * v[prevStateIndex][wordIndex-1].value;
                     if(prob>maxProb){
@@ -68,29 +75,36 @@ public class Viterbi {
                         maxStateIndex = prevStateIndex;
                     }
                 }
+                //update the values with maximum probability and stateIndex
                 v[stateIndex][wordIndex].value = maxProb;
                 v[stateIndex][wordIndex].prev = maxStateIndex;
             }
         }
 
+        // getting back tags
         String[] tags = new String[obs.length];
-        int val = obs.length-1;
-        Pair current = v[currentProbs.length-1][obs.length-1];
-        int n = obs.length-1;
-        while(true){
-            if(val>=0)
-                tags[val] = m.getOutcome(current.prev);
-            val--;
-            n--;
-            if(current.prev==null){
-                break;
+        int tagsIndex = obs.length-1;
+        Integer maxStateIndex = 0;
+        Pair max = v[maxStateIndex][tagsIndex];
+        for(int i = 0; i < v.length; i++){
+            if(max.value < v[i][tagsIndex].value){
+                max = v[i][tagsIndex];
+                maxStateIndex = i;
             }
-            current = v[current.prev][n];
+        }
+
+        if(tagsIndex<0)
+            return tags;
+
+        while(tagsIndex >= 0){
+            tags[tagsIndex] = m.getOutcome(maxStateIndex);
+            maxStateIndex = v[maxStateIndex][tagsIndex].prev;
+            tagsIndex--;
         }
         return tags;
     }
 
-    public static String replacePrevFeature(GISModel m, int stateIndex, String feature){
+    public static String replacePrevFeature(GISModel m, int stateIndex){
         String outcome = m.getOutcome(stateIndex);
         return "prevTag=" + outcome;
     }
@@ -98,7 +112,7 @@ public class Viterbi {
         if(stateIndex<0){
             return feature;
         }
-        String outcome = m.getOutcome(stateIndex-1);
+        String outcome = m.getOutcome(stateIndex);
         return "prevPrevTag=" + outcome;
     }
 
@@ -108,6 +122,17 @@ public class Viterbi {
             featureArray[i-1] = featureFileArray[i];
         }
         return featureArray;
+    }
+
+    public static Pair getMaxValue(Pair[][] v){
+        int lastColIndex = v[0].length-1;
+        Pair max = v[lastColIndex][0];
+        for(int i = 0; i < v.length; i++){
+            if(max.value < v[lastColIndex][i].value){
+                max = v[lastColIndex][i];
+            }
+        }
+        return max;
     }
 }
 

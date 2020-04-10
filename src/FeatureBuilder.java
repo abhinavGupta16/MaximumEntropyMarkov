@@ -38,7 +38,6 @@ public class FeatureBuilder {
             } else {
                 nextInput = new String[0];
             }
-//            && !".".equals(inputFileData.get(i+2).split("\t")[0])
             if(i+2 < inputFileData.size() && !"".equals(inputFileData.get(i+2).trim()) && !".".equals(inputFileData.get(i+2).charAt(0))){
                 nextNextInput = inputFileData.get(i+2).split("\t");
             } else {
@@ -66,6 +65,7 @@ public class FeatureBuilder {
         bWriter.close();
     }
 
+    // Not used as did not improve results
     public void postProcessFile(String outputFileName, String processedOutputFileName) throws Exception{
         BufferedWriter bWriter = new BufferedWriter(new FileWriter(processedOutputFileName));
         BufferedReader bReader = new BufferedReader(new FileReader(outputFileName));

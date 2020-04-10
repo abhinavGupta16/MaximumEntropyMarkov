@@ -16,7 +16,6 @@ public class MainMEMM {
         String outputFile = BASE_DIR + "mid_response.name";
         String finalOutputFile = BASE_DIR + "response.name";
         String actualOutputFile = BASE_DIR + "CONLL_dev.name";
-//        String actualOutputFile = BASE_DIR + "testFile";
 
         String featureFileForTest = BASE_DIR + "CONLL_pos-chunk.feature";
 
@@ -29,10 +28,8 @@ public class MainMEMM {
         featureBuilder2.generateFeatures();
 
         MEtag.main(new String[]{featureFileForTest, modelFile, finalOutputFile});
+//        Viterbi.main(new String[]{featureFileForTest, modelFile, finalOutputFile});
         diff(actualOutputFile, finalOutputFile);
-//        featureBuilder2.postProcessFile(outputFile, finalOutputFile);
-
-//        Runtime.getRuntime().exec("python score.name.py");
     }
 
     public static void diff(String actualFileName, String generatedFileName) throws Exception{
